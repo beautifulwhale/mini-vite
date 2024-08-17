@@ -5,7 +5,9 @@ import { init, parse } from "es-module-lexer";
 import fs from "fs-extra";
 import path from "path";
 import { normalizePath } from "../utils/normalize";
+import createDebug from "debug";
 
+const debug = createDebug("dev");
 export function preBundlePlugin(deps: Set<string>): Plugin {
     return {
         name: "esbuild:pre-bundle",
@@ -17,7 +19,7 @@ export function preBundlePlugin(deps: Set<string>): Plugin {
                     return isEntry
                         ? {
                               path: id,
-                              namespace: "bundle",
+                              namespace: "dev",
                           }
                         : {
                               path: resolve.sync(id, {
@@ -28,7 +30,7 @@ export function preBundlePlugin(deps: Set<string>): Plugin {
             });
 
             build.onLoad(
-                { filter: /.*/, namespace: "bundle" },
+                { filter: /.*/, namespace: "dev" },
                 async (args) => {
                     await init;
                     const id = args.path;
@@ -64,7 +66,7 @@ export function preBundlePlugin(deps: Set<string>): Plugin {
                     }
                     const loader = path.extname(entryPath).slice(1);
                     const contents = proxyModules.join("\n");
-
+                    debug("pre-budle contents: %o ", contents);
                     return {
                         loader: loader as Loader,
                         contents: contents,
