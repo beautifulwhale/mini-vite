@@ -7,6 +7,7 @@ import {
 } from "../node/pluginContainer";
 import { resolvePlugin, Plugin } from "../node/plugin";
 import { indexHtmlMiddleware } from "./middlewares/indexHtml";
+import { transformMiddleware } from "./middlewares/transform";
 
 export interface ServerContext {
     app: connect.Server;
@@ -36,6 +37,8 @@ export async function startServer() {
     }
 
     app.use(indexHtmlMiddleware(serverContext));
+    app.use(transformMiddleware(serverContext));
+
     app.listen(3000, async () => {
         // 依赖预构建
         await optimizer(root);
