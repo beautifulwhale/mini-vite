@@ -5,7 +5,7 @@ import {
     createPluginContainer,
     PluginContainer,
 } from "../node/pluginContainer";
-import { resolvePlugin, Plugin } from "../node/plugin";
+import { resolvePlugins, Plugin } from "../node/plugin";
 import { indexHtmlMiddleware } from "./middlewares/indexHtml";
 import { transformMiddleware } from "./middlewares/transform";
 
@@ -20,7 +20,7 @@ export async function startServer() {
     const app = connect();
     const startTime = Date.now();
     const root = process.cwd();
-    const plugins = resolvePlugin();
+    const plugins = resolvePlugins();
     const pluginContainer = createPluginContainer(plugins);
 
     const serverContext: ServerContext = {

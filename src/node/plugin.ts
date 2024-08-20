@@ -1,5 +1,6 @@
 import { LoadResult, PartialResolvedId, SourceDescription } from "rollup";
 import { ServerContext } from "../server";
+import { resolvePlugin } from "./plugins/resolve";
 
 export type ServerHook = (
     server: ServerContext
@@ -20,6 +21,6 @@ export interface Plugin {
     transformIndexHtml?: (raw: string) => Promise<string> | string;
 }
 
-export function resolvePlugin(): Plugin[] {
-    return [];
+export function resolvePlugins(): Plugin[] {
+    return [resolvePlugin()];
 }
