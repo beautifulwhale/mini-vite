@@ -49,7 +49,7 @@ export function transformMiddleware(
             }
 
             res.statusCode = 200;
-            res.setHeader("Content-Type", "application/json");
+            res.setHeader("Content-Type", "application/javascript");
             return res.end(result.code);
         }
 

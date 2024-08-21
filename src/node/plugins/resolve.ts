@@ -5,7 +5,7 @@ import path from "path";
 import { normalizePath } from "../utils/normalize";
 import resolve from "resolve";
 
-const EXTENSION_TYPES = ["js", "jsx", "ts", "tsx"];
+const EXTENSION_TYPES = [".js", ".jsx", ".ts", ".tsx"];
 
 // 路径解析插件
 export function resolvePlugin(): Plugin {
