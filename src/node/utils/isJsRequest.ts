@@ -16,3 +16,6 @@ export const isJsRequest = (url: string): boolean => {
 
 export const cleanUrl = (url: string): string =>
     url.replace(QEURY_RE, "").replace(HASH_RE, "");
+
+export const isCssRequest = (url: string): boolean =>
+    cleanUrl(url).endsWith(".css");
