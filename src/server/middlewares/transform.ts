@@ -5,6 +5,7 @@ import {
     cleanUrl,
     isCssRequest,
     isJsRequest,
+    isImportRequest
 } from "../../node/utils/isJsRequest";
 
 const debug = createDebug("dev");
@@ -46,7 +47,7 @@ export function transformMiddleware(
         const url = req.url;
         debug("transformMiddleware: %s", url);
 
-        if (isJsRequest(url) || isCssRequest(url)) {
+        if (isJsRequest(url) || isCssRequest(url) || isImportRequest(url)) {
             const result = await transformRequest(url, serverContext);
             if (!result) {
                 return next();

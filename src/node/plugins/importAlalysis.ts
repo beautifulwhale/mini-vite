@@ -41,8 +41,15 @@ export function importAnalysisPlugin(): Plugin {
             for (const importMod of imports) {
                 const { s: startMod, e: endMod, n: sourcMod } = importMod;
                 if (!sourcMod) continue;
-                // import React from 'react'; 处理
+
+                // 处理svg 导入添加?import 返回静态资源的真实地址
+                if (sourcMod.endsWith(".svg")) {
+                    const resolveUrl = await resolve(sourcMod, id);
+                    ms.overwrite(startMod, endMod, `${resolveUrl}?import`);
+                    continue;
+                }
                 if (BARE_IMPORT_RE.test(sourcMod)) {
+                    // import React from 'react';
                     const bundlePath = normalizePath(
                         path.join("/", PRE_BUNDLE_DIR, `${sourcMod}.js`)
                     );

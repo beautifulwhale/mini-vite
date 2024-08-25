@@ -2,7 +2,7 @@ import esbuild, { Loader } from "esbuild";
 import { readFile } from "fs-extra";
 import path from "path";
 import { Plugin } from "../plugin";
-import { isJsRequest } from "../utils/isJsRequest";
+import { isImportRequest, isJsRequest } from "../utils/isJsRequest";
 
 export function esbuildTransformPlugin(): Plugin {
     return {

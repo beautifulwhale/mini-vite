@@ -4,6 +4,7 @@ import { resolvePlugin } from "./plugins/resolve";
 import { esbuildTransformPlugin } from "./plugins/esbuild";
 import { importAnalysisPlugin } from "./plugins/importAlalysis";
 import { cssPlugin } from "./plugins/css";
+import { assetPlugin } from "./plugins/assets";
 
 export type ServerHook = (
     server: ServerContext
@@ -29,6 +30,7 @@ export function resolvePlugins(): Plugin[] {
         resolvePlugin(),
         esbuildTransformPlugin(),
         importAnalysisPlugin(),
+        assetPlugin(),
         cssPlugin(),
     ];
 }

@@ -8,6 +8,7 @@ import {
 import { resolvePlugins, Plugin } from "../node/plugin";
 import { indexHtmlMiddleware } from "./middlewares/indexHtml";
 import { transformMiddleware } from "./middlewares/transform";
+import { staticMiddleware } from "./middlewares/static";
 
 export interface ServerContext {
     app: connect.Server;
@@ -38,6 +39,7 @@ export async function startServer() {
 
     app.use(indexHtmlMiddleware(serverContext));
     app.use(transformMiddleware(serverContext));
+    app.use(staticMiddleware(serverContext.root));
 
     app.listen(3000, async () => {
         // 依赖预构建

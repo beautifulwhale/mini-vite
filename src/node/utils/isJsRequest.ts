@@ -19,3 +19,10 @@ export const cleanUrl = (url: string): string =>
 
 export const isCssRequest = (url: string): boolean =>
     cleanUrl(url).endsWith(".css");
+
+export const isImportRequest = (url: string): boolean =>
+    url.endsWith("?import");
+
+export function removeImportQuery(url: string): string {
+    return url.replace(/\?import$/, "");
+}
