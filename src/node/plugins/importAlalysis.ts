@@ -7,6 +7,7 @@ import MagicString from "magic-string";
 import { normalizePath } from "../utils/normalize";
 import { ServerContext } from "../../server";
 import { getShortName } from "../utils/getShortName";
+import { ModuleNode } from "../moduleGraph";
 
 export function importAnalysisPlugin(): Plugin {
     let serverContext: ServerContext;
@@ -19,7 +20,6 @@ export function importAnalysisPlugin(): Plugin {
             if (!isJsRequest(id)) {
                 return null;
             }
-            debugger;
             await init;
             const [imports] = parse(code);
             const ms = new MagicString(code);
@@ -37,6 +37,9 @@ export function importAnalysisPlugin(): Plugin {
                 )}`;
                 return resolvedId;
             };
+            const { moduleGraph } = serverContext;
+            const curModule = moduleGraph.getModuleById(id);
+            const importedModules = new Set<string>();
 
             for (const importMod of imports) {
                 const { s: startMod, e: endMod, n: sourcMod } = importMod;
@@ -54,6 +57,7 @@ export function importAnalysisPlugin(): Plugin {
                         path.join("/", PRE_BUNDLE_DIR, `${sourcMod}.js`)
                     );
 
+                    importedModules.add(bundlePath);
                     ms.overwrite(startMod, endMod, bundlePath);
                 } else if (
                     sourcMod.startsWith(".") ||
@@ -61,12 +65,16 @@ export function importAnalysisPlugin(): Plugin {
                 ) {
                     // import App from './App'; 处理相对路径导入
                     const resolved = await resolve(sourcMod, id);
-
+                    importedModules.add(resolved as string);
                     if (resolved) {
                         ms.overwrite(startMod, endMod, resolved);
                     }
                 }
             }
+            await moduleGraph.updateModuleInfo(
+                curModule as ModuleNode,
+                importedModules
+            );
             return {
                 code: ms.toString(),
                 map: ms.generateMap(),

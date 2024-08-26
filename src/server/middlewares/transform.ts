@@ -5,8 +5,9 @@ import {
     cleanUrl,
     isCssRequest,
     isJsRequest,
-    isImportRequest
+    isImportRequest,
 } from "../../node/utils/isJsRequest";
+import { SourceDescription } from "rollup";
 
 const debug = createDebug("dev");
 
@@ -14,8 +15,13 @@ export async function transformRequest(
     url: string,
     serverContext: ServerContext
 ) {
+    const { pluginContainer, moduleGraph } = serverContext;
     url = cleanUrl(url);
-    const { pluginContainer } = serverContext;
+    // 添加缓存逻辑
+    let mod = await moduleGraph.getModuleByUrl(url);
+    if (mod && mod.transformResult) {
+        return mod.transformResult as Partial<SourceDescription>;
+    }
 
     // 依次调用resolveId load transform
     const resolveResult = await pluginContainer.resolvedId(url);
@@ -25,12 +31,18 @@ export async function transformRequest(
         if (typeof code === "object" && code !== null) {
             code = code.code;
         }
+        mod = await moduleGraph.ensureEntryFromUrl(url);
+
         if (code) {
             transformResult = await pluginContainer.transform(
                 code as string,
                 resolveResult.id
             );
         }
+    }
+    // 更新新的模块
+    if (mod) {
+        mod.transformResult = transformResult;
     }
     return transformResult;
 }

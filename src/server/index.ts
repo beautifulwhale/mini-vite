@@ -9,12 +9,14 @@ import { resolvePlugins, Plugin } from "../node/plugin";
 import { indexHtmlMiddleware } from "./middlewares/indexHtml";
 import { transformMiddleware } from "./middlewares/transform";
 import { staticMiddleware } from "./middlewares/static";
+import { ModuleGraph } from "../node/moduleGraph";
 
 export interface ServerContext {
     app: connect.Server;
     root: string;
     plugins: Plugin[];
     pluginContainer: PluginContainer;
+    moduleGraph: ModuleGraph;
 }
 
 export async function startServer() {
@@ -23,12 +25,16 @@ export async function startServer() {
     const root = process.cwd();
     const plugins = resolvePlugins();
     const pluginContainer = createPluginContainer(plugins);
+    const moduleGraph = new ModuleGraph((url: string) =>
+        pluginContainer.resolvedId(url)
+    );
 
     const serverContext: ServerContext = {
         app,
         root,
         plugins,
         pluginContainer,
+        moduleGraph,
     };
 
     for (const plugin of plugins) {
