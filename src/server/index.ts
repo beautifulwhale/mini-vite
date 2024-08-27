@@ -1,5 +1,6 @@
 import connect from "connect";
 import { blue, green } from "picocolors";
+import chokidar, { FSWatcher } from "chokidar";
 import { optimizer } from "../node/optimizer";
 import {
     createPluginContainer,
@@ -10,6 +11,7 @@ import { indexHtmlMiddleware } from "./middlewares/indexHtml";
 import { transformMiddleware } from "./middlewares/transform";
 import { staticMiddleware } from "./middlewares/static";
 import { ModuleGraph } from "../node/moduleGraph";
+import { createWebSocketServer, WsServer } from "../node/ws";
 
 export interface ServerContext {
     app: connect.Server;
@@ -17,6 +19,8 @@ export interface ServerContext {
     plugins: Plugin[];
     pluginContainer: PluginContainer;
     moduleGraph: ModuleGraph;
+    watcher: FSWatcher;
+    ws: WsServer;
 }
 
 export async function startServer() {
@@ -28,6 +32,13 @@ export async function startServer() {
     const moduleGraph = new ModuleGraph((url: string) =>
         pluginContainer.resolvedId(url)
     );
+    const ws = createWebSocketServer();
+
+    // 创建文件监视
+    const watcher = chokidar.watch(root, {
+        ignored: ["**/node_modules/**", "**/.git/**"],
+        ignoreInitial: true,
+    });
 
     const serverContext: ServerContext = {
         app,
@@ -35,6 +46,8 @@ export async function startServer() {
         plugins,
         pluginContainer,
         moduleGraph,
+        watcher,
+        ws,
     };
 
     for (const plugin of plugins) {

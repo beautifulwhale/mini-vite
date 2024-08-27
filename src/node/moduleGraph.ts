@@ -82,4 +82,16 @@ export class ModuleGraph {
             }
         }
     }
+
+    // hmr热更新清除依赖
+    async invalidateModule(file: string) {
+        const mod = this.getModuleById(file);
+        if (mod) {
+            mod.lastHMRTimestamp = Date.now();
+            mod.transformResult = null;
+            mod.importers.forEach((importer) => {
+                this.invalidateModule(importer.id!);
+            });
+        }
+    }
 }
