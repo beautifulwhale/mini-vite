@@ -1,5 +1,6 @@
 import WebSocket, { WebSocketServer } from "ws";
 import { red } from "picocolors";
+import { HMR_PORT } from "./optimizer/const";
 
 export type WsServer = {
     send: (payload: any) => void;
@@ -8,7 +9,7 @@ export type WsServer = {
 
 export function createWebSocketServer(): WsServer {
     const wss = new WebSocketServer({
-        port: 24678,
+        port: HMR_PORT,
     });
 
     wss.on("connection", (socket) => {

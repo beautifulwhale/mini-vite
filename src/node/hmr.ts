@@ -13,7 +13,7 @@ export function bindingHmrEvents(serverContext: ServerContext) {
         await moduleGraph.invalidateModule(file);
 
         ws.send({
-            type: "update",
+            type: "updated",
             updates: [
                 {
                     type: "js-changed",

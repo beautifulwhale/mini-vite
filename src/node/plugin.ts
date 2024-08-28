@@ -5,6 +5,7 @@ import { esbuildTransformPlugin } from "./plugins/esbuild";
 import { importAnalysisPlugin } from "./plugins/importAlalysis";
 import { cssPlugin } from "./plugins/css";
 import { assetPlugin } from "./plugins/assets";
+import { clientInjectPlugin } from "./plugins/clinentInject";
 
 export type ServerHook = (
     server: ServerContext
@@ -27,6 +28,7 @@ export interface Plugin {
 
 export function resolvePlugins(): Plugin[] {
     return [
+        clientInjectPlugin(),
         resolvePlugin(),
         esbuildTransformPlugin(),
         importAnalysisPlugin(),
