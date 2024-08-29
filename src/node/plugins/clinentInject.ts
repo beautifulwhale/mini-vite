@@ -28,11 +28,13 @@ export function clientInjectPlugin(): Plugin {
                     "dist",
                     "client.mjs"
                 );
-                console.log('realPath', realPath);
-                
+
                 const code = await readFile(realPath, "utf-8");
                 return {
-                    code: code.replace("__HMR_PORT__", JSON.stringify(HMR_PORT)),
+                    code: code.replace(
+                        "__HMR_PORT__",
+                        JSON.stringify(HMR_PORT)
+                    ),
                 };
             }
         },

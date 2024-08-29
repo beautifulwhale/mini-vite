@@ -1,6 +1,10 @@
 import { init, parse } from "es-module-lexer";
 import { Plugin } from "../plugin";
-import { BARE_IMPORT_RE, PRE_BUNDLE_DIR } from "../optimizer/const";
+import {
+    BARE_IMPORT_RE,
+    CLIENT_PUBLIC_PATH,
+    PRE_BUNDLE_DIR,
+} from "../optimizer/const";
 import path from "path";
 import { cleanUrl, isJsRequest } from "../utils/isJsRequest";
 import MagicString from "magic-string";
@@ -38,7 +42,7 @@ export function importAnalysisPlugin(): Plugin {
                 return resolvedId;
             };
             const { moduleGraph } = serverContext;
-            const curModule = moduleGraph.getModuleById(id);
+            const curModule = moduleGraph.getModuleById(id)!;
             const importedModules = new Set<string>();
 
             for (const importMod of imports) {
@@ -70,6 +74,15 @@ export function importAnalysisPlugin(): Plugin {
                         ms.overwrite(startMod, endMod, resolved);
                     }
                 }
+            }
+
+            if (!id.includes("node_modules")) {
+                ms.prepend(
+                    `import { createHotContext as __vite__createHotContext } from "${CLIENT_PUBLIC_PATH}";` +
+                        `import.meta.hot = __vite__createHotContext(${JSON.stringify(
+                            curModule.url
+                        )});`
+                );
             }
             await moduleGraph.updateModuleInfo(
                 curModule as ModuleNode,
