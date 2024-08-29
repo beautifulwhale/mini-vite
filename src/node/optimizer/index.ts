@@ -18,12 +18,12 @@ export async function optimizer(root: string) {
         plugins: [scanPlugin(deps)],
     });
 
-    console.log(
-        `${green("需要预构建的依赖")}:\n${[...deps]
-            .map(green)
-            .map((item) => `  ${item}`)
-            .join("\n")}`
-    );
+    // console.log(
+    //     `${green("需要预构建的依赖")}:\n${[...deps]
+    //         .map(green)
+    //         .map((item) => `  ${item}`)
+    //         .join("\n")}`
+    // );
 
     // 对依赖进行打包
     await build({

@@ -5,8 +5,9 @@ export default defineConfig({
         index: "src/node/cli.ts",
         client: "src/client/client.ts",
     },
-    splitting: false,
-    sourcemap: true,
     format: ["esm", "cjs"],
     target: "es2020",
+    sourcemap: true,
+    splitting: false,
+    external: ["@babel/core", "react-refresh"],
 });

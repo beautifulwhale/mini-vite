@@ -4,11 +4,8 @@ import { readFile } from "fs-extra";
 import { ServerContext } from "../../server";
 import { CLIENT_PUBLIC_PATH } from "../optimizer/const";
 import { Plugin } from "../plugin";
-import { red } from "picocolors";
 
 export function clientInjectPlugin(): Plugin {
-    console.log(red("called clientInjectPlugin"));
-
     let s: ServerContext;
     return {
         name: "vite:clientInject",
@@ -31,6 +28,8 @@ export function clientInjectPlugin(): Plugin {
                     "dist",
                     "client.mjs"
                 );
+                console.log('realPath', realPath);
+                
                 const code = await readFile(realPath, "utf-8");
                 return {
                     code: code.replace("__HMR_PORT__", JSON.stringify(HMR_PORT)),
@@ -38,7 +37,6 @@ export function clientInjectPlugin(): Plugin {
             }
         },
         transformIndexHtml(raw) {
-            console.log("raw---", raw);
             // 添加客户端脚本
             return raw.replace(
                 /(<head[^>]*>)/i,
