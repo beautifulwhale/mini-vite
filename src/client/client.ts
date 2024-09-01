@@ -19,10 +19,7 @@ async function handleMessage(payload: any) {
         case "updated":
             payload.updates.forEach(async (u: Update) => {
                 if (u.type === "js-changed") {
-                    const updated = await fetchUpdate(u);
-                    if (updated) {
-                        updated();
-                    }
+                    fetchUpdate(u);
                 }
             });
             break;
