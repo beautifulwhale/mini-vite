@@ -80,7 +80,7 @@ export function importAnalysisPlugin(): Plugin {
                 ms.prepend(
                     `import { createHotContext as __vite__createHotContext } from "${CLIENT_PUBLIC_PATH}";` +
                         `import.meta.hot = __vite__createHotContext(${JSON.stringify(
-                            curModule.url
+                            cleanUrl(curModule.url)
                         )});`
                 );
             }
