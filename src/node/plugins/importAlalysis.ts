@@ -76,7 +76,10 @@ export function importAnalysisPlugin(): Plugin {
                 }
             }
 
-            if (!id.includes("node_modules")) {
+            if (
+                !id.includes("node_modules") &&
+                !id.includes(CLIENT_PUBLIC_PATH)
+            ) {
                 ms.prepend(
                     `import { createHotContext as __vite__createHotContext } from "${CLIENT_PUBLIC_PATH}";` +
                         `import.meta.hot = __vite__createHotContext(${JSON.stringify(

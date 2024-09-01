@@ -12,6 +12,7 @@ import { transformMiddleware } from "./middlewares/transform";
 import { staticMiddleware } from "./middlewares/static";
 import { ModuleGraph } from "../node/moduleGraph";
 import { createWebSocketServer, WsServer } from "../node/ws";
+import { bindingHmrEvents } from "../node/hmr";
 
 export interface ServerContext {
     app: connect.Server;
@@ -49,6 +50,7 @@ export async function startServer() {
         watcher,
         ws,
     };
+    bindingHmrEvents(serverContext);
 
     for (const plugin of plugins) {
         if (plugin.configureServer) {

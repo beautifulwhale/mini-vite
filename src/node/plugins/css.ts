@@ -24,6 +24,8 @@ export function cssPlugin(): Plugin {
                         id,
                         serverContext.root
                     )}");
+                import { updateStyle, removeStyle } from "${CLIENT_PUBLIC_PATH}";
+                const id = '${id}';
                 const css = "${code.replace(/\n/g, "")}";
                 updateStyle(id, css);
                 import.meta.hot.accept();

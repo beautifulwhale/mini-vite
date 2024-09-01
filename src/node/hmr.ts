@@ -7,8 +7,8 @@ export function bindingHmrEvents(serverContext: ServerContext) {
 
     // 监测变化的文件
     watcher.on("change", async (file) => {
-        console.log(`✨${blue("[hmr]")} ${green(file)}changed`);
-
+        console.log(`✨${blue("[hmr]")} ${green(file)} changed`);
+        debugger;
         // 清除模块依赖图中的缓存
         await moduleGraph.invalidateModule(file);
 
@@ -18,8 +18,8 @@ export function bindingHmrEvents(serverContext: ServerContext) {
                 {
                     type: "js-changed",
                     timestamp: Date.now(),
-                    path: `${getShortName(file, root)}`,
-                    acceptPath: `${getShortName(file, root)}`,
+                    path: `/${getShortName(file, root)}`,
+                    acceptPath: `/${getShortName(file, root)}`,
                 },
             ],
         });

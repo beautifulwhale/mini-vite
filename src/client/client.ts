@@ -17,10 +17,12 @@ async function handleMessage(payload: any) {
             });
             break;
         case "updated":
-            payload.updates.forEach((u: Update) => {
+            payload.updates.forEach(async (u: Update) => {
                 if (u.type === "js-changed") {
-                    fetchUpdate(u);
-                    console.log("u", u);
+                    const updated = await fetchUpdate(u);
+                    if (updated) {
+                        updated();
+                    }
                 }
             });
             break;
@@ -40,11 +42,10 @@ export interface HotModuleCallbacks {
 }
 
 const hotModulesMap = new Map<string, HotModule>();
+
 const pruneMap = new Map<string, (data: any) => void | Promise<void>>();
 
 export function createHotContext(ownPath: string) {
-    console.log("hotModulesMap", hotModulesMap);
-
     const mod = hotModulesMap.get(ownPath);
     if (mod) {
         mod.callbacks = [];
@@ -76,7 +77,10 @@ export function createHotContext(ownPath: string) {
     };
 }
 
-async function fetchUpdate({ path, timestamp }: Update) {
+async function fetchUpdate({
+    path,
+    timestamp,
+}: Update): Promise<(() => void) | undefined> {
     const mod = hotModulesMap.get(path);
     if (!mod) return;
 
